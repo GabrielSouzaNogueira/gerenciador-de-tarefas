@@ -1,5 +1,5 @@
 :root {
-    --color-bg-main:  #470a56; 
+    --color-bg-main: #470a56; 
     --color-text-title-top: hsl(163, 52%, 59%); 
     --color-text-title-bottom: #67adb0; 
     --color-bg-login-box: #FFFFFF; 
@@ -9,11 +9,14 @@
     --color-text-main: #000000;
 }
 
+* {
+    box-sizing: border-box; /* Garante que padding não aumente o tamanho dos elementos */
+}
+
 body {
     font-family: sans-serif;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
     background-color: var(--color-bg-main);
     display: flex;
     justify-content: center;
@@ -26,8 +29,42 @@ body {
     width: 900px; 
     height: 550px; 
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden; 
+    background-color: var(--color-bg-login-box);
 }
 
+/* Estilo dos Inputs e Password Wrapper */
+.input-group {
+    margin-bottom: 5px; /* Espaço entre cada bloco de campo */
+    text-align: left;
+}
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    padding-right: 45px; /* espaço p/ icon do olhinho*/
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: var(--color-bg-main);
+    font-size: 1.1rem;
+    transition: color 0.3s;
+    z-index: 10;
+}
+
+.toggle-password:hover {
+    color: var(--color-text-title-bottom);
+}
+
+/* infos esquerda*/
 .info-section {
     flex: 1; 
     background-color: var(--color-bg-main);
@@ -43,154 +80,76 @@ body {
     font-weight: 900;
     text-align: center;
     line-height: 0.9;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
 }
 
-.title-top {
-    color: var(--color-text-title-top);
-    background-color: var(--color-text-title-top); 
-    color: var(--color-bg-main);
+.title-top, .title-bottom {
     padding: 5px 15px;
     display: inline-block;
     letter-spacing: 2px;
+    color: var(--color-bg-main);
 }
 
-.title-bottom {
-    color: var(--color-text-title-bottom);
-    background-color: var(--color-text-title-bottom);
-    color: var(--color-bg-main);
-    padding: 5px 15px;
-    display: inline-block;
-    letter-spacing: 2px;
-}
+.title-top { background-color: var(--color-text-title-top); }
+.title-bottom { background-color: var(--color-text-title-bottom); }
 
 .task-icon {
     font-size: 10rem;
     color: white; 
     margin-top: 20px;
-    
-    text-shadow: 
-        -2px -2px 0 var(--color-bg-main),  
-        2px -2px 0 var(--color-bg-main),
-        -2px 2px 0 var(--color-bg-main),
-        2px 2px 0 var(--color-bg-main),
-        0 0 0 white, 
-        0 0 0 var(--color-bg-main);
-    
 }
 
-
+/* --- Seção de Formulários (Direita) --- */
 .login-section {
     flex: 1; 
     background-color: var(--color-bg-login-box);
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px;
+    padding: 50px;
 }
 
 .login-box {
     width: 100%;
     max-width: 350px;
-    text-align: center;
-    border-radius: 20px;
 }
 
 .login-box h2 {
     font-size: 1.5rem;
-    font-weight: 400;
     color: var(--color-text-main);
-    margin-bottom: 30px;
-    text-align: left;
+    margin-bottom: 25px;
+    text-align: center;
 }
 
-
-#loginForm {
+form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    border-radius: 50px;
+    gap: 10px;
 }
 
-input[type="text"],
-input[type="password"] {
+input {
     width: 100%;
     padding: 12px 15px;
     border: 1px solid var(--color-input-border);
     font-size: 1rem;
-    outline: none;
-    box-sizing: border-box;
     border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s;
 }
-
-input::placeholder {
-    color: #A9A9A9; 
-    font-size: 0.9rem;
-}
-
 
 .btn-login {
     background-color: var(--color-btn-bg);
-    color: var(--color-text-btn);
-    padding: 15px;
+    color: var(--color-text-btn); 
+    padding: 12px;
     border: none;
     font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
-    margin-top: 50px;
-    transition: background-color 0.3s;
     border-radius: 8px;
+    transition: 0.3s;
+    margin-top: 10px;
 }
 
 .btn-login:hover {
-    background-color: #272653; 
-}
-
-
-.signup-text {
-    margin-top: 20px;
-    font-size: 0.8rem;
-    color: var(--color-text-main);
-    text-align: center;
-}
-
-.signup-text a {
-    color: var(--color-btn-bg); 
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.signup-text a:hover {
-    text-decoration: underline;
-}
-
-
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-        width: 100%;
-        height: auto;
-    }
-
-    .info-section {
-        padding: 40px 20px;
-        height: auto;
-    }
-
-    .title {
-        font-size: 2.5rem;
-    }
-
-    .task-icon {
-        font-size: 7rem;
-        margin-bottom: 20px;
-    }
-
-    .login-section {
-        padding: 40px 20px;
-    }
-
-    .login-box h2 {
-        text-align: center;
-    }
+    background-color: #272653;
 }

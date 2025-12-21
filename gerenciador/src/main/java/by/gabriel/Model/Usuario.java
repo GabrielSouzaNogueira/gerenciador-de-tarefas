@@ -10,7 +10,7 @@ public class Usuario {
     private String nome;
     private String senha;
     private UserStatus status;
-    private LocalDateTime dataCriacao;
+    private transient LocalDateTime dataCriacao;
 
     public Usuario() {
 

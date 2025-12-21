@@ -1,0 +1,26 @@
+meta {
+  name: TesteLogin
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:4567/login
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nome": "Gabriel Souza Nogueira",
+    "senha": "123456"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

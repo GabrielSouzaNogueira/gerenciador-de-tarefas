@@ -11,8 +11,6 @@ if (btnSignup) {
   });
 }
 
-// Se quiser voltar para login, crie no HTML:
-// <a href="#" id="signinLink">Login</a>
 var btnSignin = document.querySelector("#signinLink");
 if (btnSignin) {
   btnSignin.addEventListener("click", function (e) {

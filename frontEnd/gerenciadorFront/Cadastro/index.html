@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela de cadastro</title>
+    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+        <div class="login-section">
+            <div class="login-box">
+                <h2>Cadastre-se aqui</h2>
+                <form id="loginForm">
+                    <div class = "campo-container">
+                        <label for="usernameInput"></label>
+                        <input type="text" id="usernameInput" placeholder="cadastre seu nome de usuário" required>
+                        <p id="usernameError" class="mensagem-erro"></p>
+                    </div>
+                    <div class = "campo-container">
+                        <label for="passwordInput"></label>
+                        <input type="password" id="passwordInput" placeholder="cadastre sua senha" required>
+                        <p id="passwordError" class="mensagem-erro"></p>
+                    </div>
+                    <button type="submit" class="btn-login">CADASTRAR</button>
+                </form>
+                <p class="signup-text">
+                    Já tem conta? <a href="#" id="signupLink">faça seu login aqui</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/script.js"></script>
+</body>
+</html>

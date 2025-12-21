@@ -1,7 +1,8 @@
 package by.gabriel;
 
 import static spark.Spark.*;
-import by.gabriel.ConexaoDB.ConexaoDB;
+
+import by.gabriel.Configuration.CorsFilter;
 import by.gabriel.Controller.UserController.UserController;
 
 public class App{
@@ -9,7 +10,8 @@ public class App{
         
         port(4567);
     
-        new UserController();
+        CorsFilter.enableCORS(); //Habilita o CORS
+        new UserController(); //Instancia o controller
 
     }
 }

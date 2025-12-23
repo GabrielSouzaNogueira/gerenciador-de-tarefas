@@ -4,8 +4,11 @@ import java.sql.SQLDataException;
 
 import by.gabriel.Model.Usuario;
 import by.gabriel.Repository.UserDAO;
+import by.gabriel.Model.Status.UserStatus;
 
 public class UserService {
+
+    UserStatus userStatus;
 
     private UserDAO dao;
 
@@ -14,12 +17,23 @@ public class UserService {
     }
 
     // Método responsável por realizar o login
-    public String realizarLogin(Usuario usuario) {
+    public Usuario realizarLogin(Usuario usuario) {
         
+        String nome = usuario.getNome();
+        nome = nome.trim(); //Removendo os espaços no começo e no fim pois diferente da senha não posso remover os espaços entre o nome.
+
+        //Verificando se o tamanho da senha é menor que 6 e se a senha contem qualquer espaço.(contains())  verificar se
+        //  uma string contém outra string dentro dela.
+        if(usuario.getSenha().length() < 6 || usuario.getSenha().contains(" ")){
+            throw new IllegalArgumentException("A senha precisa ter no minimo 6 e não pode conter espaços");
+        }
+
+        //Verifico se o nome está nulo ou (||) se o nome está vazio ou se contem somente espaços
         if (usuario.getNome() == null || usuario.getNome().trim().isBlank()) {
             throw new IllegalArgumentException("Nome de usuário está incorreto ou vazio");
         }
 
+          //Verifico se a senha está nula ou (||) se a senha está vazio ou se contem somente espaços
         if (usuario.getSenha() == null || usuario.getSenha().trim().isBlank()) {
             throw new IllegalArgumentException("A senha está incorreta ou vazia!");
         }
@@ -32,28 +46,28 @@ public class UserService {
             usuario.setSenha(usuario.getSenha());
 
             // Chama o DAO para verificar se existe um usuário com esse nome e senha no banco
-            boolean autenticado = dao.realizarLogin(usuario);
+            Usuario autenticado = dao.realizarLogin(usuario);
 
-            // Se o DAO retornar true, significa que o usuário foi encontrado e autenticado
-            if (autenticado) {
-                
-                return "Login realizado com sucesso!";
-            
-            } else {
-                
-                // Caso contrário, ou nome ou senha estão incorretos
-                return "Usuario ou senha incorretos!";
+            if(autenticado == null ) {
+                throw new IllegalArgumentException("Usuário ou senha incorretos!");
+
             }
+
+            if(autenticado.getStatus() == userStatus.DESATIVADO) {
+                throw new IllegalStateException("Usuário está desativado e não pode efetuar login.");
+            }
+
+            return autenticado; //Caso passe pelas verificações
 
         } catch (IllegalArgumentException e) {
             // Captura erros específicos de argumentos inválidos
             // Exemplo: se o nome ou senha vierem nulos ou vazios
-            return e.getMessage();
+            throw new IllegalArgumentException("Nome ou senha invalidos: " + e.getMessage());
 
         } catch (Exception e) {
             // Captura qualquer outro erro inesperado (ex: problemas de conexão com o banco)
             e.printStackTrace(); // Mostra o erro completo no console para debug
-            return "Erro ao tentar realizar login. Tente novamente.";
+            throw new IllegalArgumentException("Ocorreu algum erro ao realizar o login: " + e.getMessage());
         }
     }
 

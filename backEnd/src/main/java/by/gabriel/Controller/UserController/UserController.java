@@ -25,35 +25,47 @@ public class UserController {
             
             try {
 
+                // Converte o JSON recebido no corpo da requisição para um objeto Usuario
                 Usuario usuario = gson.fromJson(req.body(), Usuario.class);
 
-                // Chama o service
-                String resultado = userService.realizarLogin(usuario);
-                boolean sucesso = resultado.equals("Login realizado com sucesso!");
+                // Chama o service para realizar o login
+                // Se credenciais inválidas ou usuário desativado, o service lança exceção
+                Usuario autenticado = userService.realizarLogin(usuario);
 
+                // Se chegou aqui, o login foi bem-sucedido
                 res.type("application/json");
+                res.status(200); // OK
 
-                if (sucesso) {
-                    res.status(200); // OK
-                } else {
-                    res.status(401); // Unauthorized (credenciais inválidas)
-                }
+                // Retorna uma resposta JSON com sucesso = true e mensagem
+                return gson.toJson(new Resposta(true, "Usuário logado com sucesso!", autenticado));
 
-                return gson.toJson(new Resposta(sucesso, resultado));
 
-            } catch (IllegalArgumentException e) {
+            } 
+            catch (IllegalArgumentException e) {
                 
-                res.status(400); // Bad Request (dados inválidos)
+                // Erros de validação ou usuário inexistente
+                res.status(400); // Bad Request
                 res.type("application/json");
                 return gson.toJson(new Resposta(false, e.getMessage()));
 
-            } catch (Exception e) {
+            } 
+            catch (IllegalStateException e) {
                 
+                // Usuário desativado
+                res.status(401); // Unauthorized
+                res.type("application/json");
+                return gson.toJson(new Resposta(false, e.getMessage()));
+
+            } 
+            catch (Exception e) {
+                
+                // Erros inesperados
                 e.printStackTrace();
                 res.status(500); // Internal Server Error
                 res.type("application/json");
                 return gson.toJson(new Resposta(false, "Erro interno no servidor. Tente novamente."));
             }
+
         });
 
         // Endpoint POST para cadastro de usuário

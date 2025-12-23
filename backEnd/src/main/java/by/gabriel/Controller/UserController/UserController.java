@@ -56,5 +56,56 @@ public class UserController {
             }
         });
 
+        // Endpoint POST para cadastro de usuário
+        post("/cadastro", (req, res) -> {
+            
+            try {
+
+                // Converte o corpo da requisição (JSON) em um objeto Usuario
+                // Exemplo: {"nome":"Gabriel","senha":"123"} vira um objeto Usuario
+                Usuario usuario = gson.fromJson(req.body(), Usuario.class);
+
+                // Chama o service para tentar cadastrar o usuário
+                // O service retorna true se cadastrou com sucesso, false se não
+                boolean cadastrado = userService.cadastroUser(usuario);
+
+                // Se o cadastro foi bem-sucedido (true)
+                if (cadastrado) {
+                    
+                    res.status(201); // Define o status HTTP como 201 (Created)
+                    return gson.toJson("Usuário cadastrado com sucesso!");
+                
+                } else {
+                    
+                    // Se não conseguiu cadastrar (ex: DAO retornou false)
+                    res.status(400); // Define o status HTTP como 400 (Bad Request)
+                    return gson.toJson("Não foi possível cadastrar o usuário.");
+                }
+
+            } 
+            catch (IllegalArgumentException e) {
+                
+                // Captura erros de validação (ex.: nome ou senha inválidos)
+                res.status(400); // Bad Request
+                return gson.toJson(e.getMessage());
+
+            } 
+            catch (IllegalStateException e) {
+                
+                // Captura erros relacionados ao banco de dados (ex.: SQLDataException tratado no service)
+                res.status(500); // Internal Server Error
+                return gson.toJson("Erro ao inserir no banco: " + e.getMessage());
+
+            } 
+            catch (Exception e) {
+                
+                // Captura qualquer outro erro inesperado (ex.: problemas sistêmicos)
+                e.printStackTrace(); // Mostra o erro completo no console para debug
+                res.status(500); // Internal Server Error
+                return gson.toJson("Erro sistêmico: " + e.getMessage());
+            }
+            
+        });
+
     }
 }

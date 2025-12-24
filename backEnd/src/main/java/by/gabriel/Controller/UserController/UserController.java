@@ -6,6 +6,7 @@ import by.gabriel.Controller.Resposta;
 import by.gabriel.Model.Usuario;
 import by.gabriel.Repository.UserDAO;
 import by.gabriel.Services.UserService;
+import by.gabriel.Controller.UserController.UserDTO;
 
 public class UserController {
 
@@ -21,78 +22,84 @@ public class UserController {
 
     private void configurarRotas() {
         
+        //EndPoint para realizar o login
         post("/login", (req, res) -> {
             
             try {
-
+                
                 // Converte o JSON recebido no corpo da requisição para um objeto Usuario
                 Usuario usuario = gson.fromJson(req.body(), Usuario.class);
 
                 // Chama o service para realizar o login
-                // Se credenciais inválidas ou usuário desativado, o service lança exceção
                 Usuario autenticado = userService.realizarLogin(usuario);
 
-                // Se chegou aqui, o login foi bem-sucedido
+                // Cria o DTO com os dados do usuário autenticado + sucesso/mensagem
+                UserDTO dto = new UserDTO(
+                    true,
+                    "Usuário logado com sucesso!",
+                    autenticado.getUserId(),
+                    autenticado.getNome(),
+                    autenticado.getStatus()
+                );
+
+                // Configura a resposta HTTP
                 res.type("application/json");
                 res.status(200); // OK
 
-                // Retorna uma resposta JSON com sucesso = true e mensagem
-                return gson.toJson(new Resposta(true, "Usuário logado com sucesso!", autenticado));
+                // Retorna o DTO convertido em JSON
+                return gson.toJson(dto);
 
-
-            } 
-            catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 
                 // Erros de validação ou usuário inexistente
                 res.status(400); // Bad Request
                 res.type("application/json");
-                return gson.toJson(new Resposta(false, e.getMessage()));
+                return gson.toJson(new UserDTO(false, e.getMessage()));
 
-            } 
-            catch (IllegalStateException e) {
+            } catch (IllegalStateException e) {
                 
                 // Usuário desativado
                 res.status(401); // Unauthorized
                 res.type("application/json");
-                return gson.toJson(new Resposta(false, e.getMessage()));
+                return gson.toJson(new UserDTO(false, e.getMessage()));
 
-            } 
-            catch (Exception e) {
+            } catch (Exception e) {
                 
                 // Erros inesperados
                 e.printStackTrace();
                 res.status(500); // Internal Server Error
                 res.type("application/json");
-                return gson.toJson(new Resposta(false, "Erro interno no servidor. Tente novamente."));
+                return gson.toJson(new UserDTO(false, "Erro interno no servidor. Tente novamente."));
             }
-
         });
+
 
         // Endpoint POST para cadastro de usuário
         post("/cadastro", (req, res) -> {
             
             try {
 
-                // Converte o corpo da requisição (JSON) em um objeto Usuario
-                // Exemplo: {"nome":"Gabriel","senha":"123"} vira um objeto Usuario
+                // Converte o corpo(dados) da requisição (JSON) em um objeto Usuario
                 Usuario usuario = gson.fromJson(req.body(), Usuario.class);
 
                 // Chama o service para tentar cadastrar o usuário
-                // O service retorna true se cadastrou com sucesso, false se não
-                boolean cadastrado = userService.cadastroUser(usuario);
+                Usuario cadastrado = userService.cadastroUser(usuario);
 
-                // Se o cadastro foi bem-sucedido (true)
-                if (cadastrado) {
-                    
-                    res.status(201); // Define o status HTTP como 201 (Created)
-                    return gson.toJson("Usuário cadastrado com sucesso!");
-                
-                } else {
-                    
-                    // Se não conseguiu cadastrar (ex: DAO retornou false)
-                    res.status(400); // Define o status HTTP como 400 (Bad Request)
-                    return gson.toJson("Não foi possível cadastrar o usuário.");
-                }
+                //Criando o DTO para devolver ao cliente
+                UserDTO dto = new UserDTO(
+                    true,
+                    "Usuario cadastrado com sucesso!: ",
+                    cadastrado.getUserId(),
+                    cadastrado.getNome(),
+                    cadastrado.getStatus()
+                );
+
+                // Configura a resposta HTTP
+                res.type("application/json");
+                res.status(200); // OK
+
+                // Retorna o DTO convertido em JSON
+                return gson.toJson(dto);
 
             } 
             catch (IllegalArgumentException e) {

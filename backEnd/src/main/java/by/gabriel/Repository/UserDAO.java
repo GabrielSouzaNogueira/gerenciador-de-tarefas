@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import by.gabriel.ConexaoDB.ConexaoDB;
 import by.gabriel.Model.Usuario;
@@ -54,29 +55,44 @@ public class UserDAO {
         return null;
     }
 
-    //Cadastro de usuarios no banco
-    public boolean cadastroUser(Usuario usuario) throws SQLException{
-        String sql = "INSERT INTO usuario (nome, senha) VALUES (?, ?)"; //Consulta SQL
+    // Cadastro de usuários no banco
+    public Usuario cadastroUser(Usuario usuario) {
+        // SQL para inserir nome e senha (status é definido pelo banco como default)
+        String sql = "INSERT INTO usuario (nome, senha) VALUES (?, ?)";
 
-        //Realizo a conexao
-        try(Connection conn = new ConexaoDB().conectar()) {
-            PreparedStatement stmt = conn.prepareStatement(sql);
+        // Cria conexão e PreparedStatement pedindo retorno da chave primária gerada
+        try (Connection conn = new ConexaoDB().conectar();
+            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            //insiro os valores reais substituindo os placeholders(?)
+            // Define os valores dos parâmetros
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getSenha());
-        
-            //Caso tenha criado com sucesso: Retorno as linhas afetadas
+
+            // Executa o INSERT
             int linhasAfetadas = stmt.executeUpdate();
-            return linhasAfetadas > 0;
 
+            if (linhasAfetadas > 0) {
+                // Recupera o ID gerado automaticamente
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        int idGerado = rs.getInt(1);
+                        usuario.setUserId(idGerado);
+
+                        // Define status padrão no objeto (mesmo que o banco já tenha feito isso)
+                        usuario.setStatus(UserStatus.ATIVO);
+                    }
+                }
+                // Retorna o usuário já com ID e status
+                return usuario;
+            } else {
+                return null; // Nenhuma linha inserida
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Lança exceção genérica para ser tratada no Service
+            throw new IllegalStateException("Erro ao inserir usuário no banco: " + e.getMessage());
         }
-        catch(SQLException e){
-
-            //Caso tenha algum erro de banco eu trato aqui
-            throw new IllegalStateException("Algo deu errado na inserção dos dados no banco!: " + e.getMessage());
-        }
-
     }
 }
     

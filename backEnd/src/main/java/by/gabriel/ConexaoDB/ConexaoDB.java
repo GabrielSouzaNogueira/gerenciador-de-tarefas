@@ -18,7 +18,6 @@ public class ConexaoDB {
     }
 
     public static void testarConexao() {
-        ConexaoDB conexaoDB = new ConexaoDB();
 
         try(Connection conn = new ConexaoDB().conectar()) {
             System.out.println("Conectado ao banco com sucesso!!");

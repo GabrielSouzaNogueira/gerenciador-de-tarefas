@@ -10,7 +10,7 @@ public class UserDTO {
     private String nome;
     private UserStatus status;
 
-    // Construtor completo
+    // Construtor completo quando der certo
     public UserDTO(boolean sucesso, String mensagem, int userId, String nome, UserStatus status) {
         this.sucesso = sucesso;
         this.mensagem = mensagem;

@@ -2,11 +2,11 @@ package by.gabriel.Controller.UserController;
 
 import com.google.gson.Gson;
 import static spark.Spark.*;
-import by.gabriel.Controller.Resposta;
-import by.gabriel.Model.Usuario;
+
+import by.gabriel.Repository.MovUserDAO;
 import by.gabriel.Repository.UserDAO;
 import by.gabriel.Services.UserService;
-import by.gabriel.Controller.UserController.UserDTO;
+import by.gabriel.Model.Usuario.Usuario;
 
 public class UserController {
 
@@ -14,7 +14,7 @@ public class UserController {
     private Gson gson;
 
     public UserController() {
-        this.userService = new UserService(new UserDAO());
+        this.userService = new UserService(new UserDAO(), new MovUserDAO());
         this.gson = new Gson();
         configurarRotas();
 

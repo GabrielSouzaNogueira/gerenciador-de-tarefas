@@ -3,18 +3,23 @@ package by.gabriel.Services;
 import java.sql.SQLDataException;
 import java.sql.SQLException;
 
-import by.gabriel.Model.Usuario;
+import by.gabriel.Repository.MovUserDAO;
 import by.gabriel.Repository.UserDAO;
+import by.gabriel.Model.Movimentacao.MovUser;
+import by.gabriel.Model.Status.StatusMovUser;
 import by.gabriel.Model.Status.UserStatus;
+import by.gabriel.Model.Usuario.Usuario;
 
 public class UserService {
 
     UserStatus userStatus;
 
     private UserDAO dao;
+    private MovUserDAO movUserDAO;
 
-    public UserService(UserDAO dao) {
+    public UserService(UserDAO dao, MovUserDAO movUserDAO) {
         this.dao = dao;
+        this.movUserDAO = movUserDAO;
     }
 
     // Método responsável por realizar o login
@@ -59,6 +64,9 @@ public class UserService {
             if(autenticado.getStatus() == userStatus.DESATIVADO) {
                 throw new IllegalStateException("Usuário está desativado e não pode efetuar login.");
             }
+
+            //Adicionando a movimentação de login
+            MovUser movUser = movUserDAO.addMovimentacaoUser(autenticado.getUserId(), StatusMovUser.LOGIN);
 
             return autenticado; //Caso passe pelas verificações
 
@@ -109,6 +117,9 @@ public class UserService {
             if(cadastrado == null) {
                 throw new IllegalArgumentException("Alguns dados foram inseridos incorretamente");
             }
+
+            //Implementando a movimentação do cadastro
+            MovUser movUser = movUserDAO.addMovimentacaoUser(cadastrado.getUserId(), StatusMovUser.CADASTRO);
         
             // retorna true se cadastrou, false se não
             return cadastrado;

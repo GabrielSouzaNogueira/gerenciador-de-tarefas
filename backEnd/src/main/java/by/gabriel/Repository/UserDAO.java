@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import by.gabriel.ConexaoDB.ConexaoDB;
-import by.gabriel.Model.Usuario;
 import by.gabriel.Model.Status.UserStatus;
+import by.gabriel.Model.Usuario.Usuario;
 
 public class UserDAO {
 

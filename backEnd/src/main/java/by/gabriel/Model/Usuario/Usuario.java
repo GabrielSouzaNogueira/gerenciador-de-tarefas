@@ -1,4 +1,4 @@
-package by.gabriel.Model;
+package by.gabriel.Model.Usuario;
 
 import java.time.LocalDateTime;
 

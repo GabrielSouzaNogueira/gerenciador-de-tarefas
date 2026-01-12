@@ -1,99 +1,92 @@
-// Exibe no console que o script foi carregado
 console.log("Script carregado!");
 
-// Seleciona todos os formulários da página
+const body = document.querySelector("body"); // body definido no CSS.s
 const forms = document.querySelectorAll("form");
+const btnSignin = document.querySelector("#signinLink");
+const btnSignup = document.querySelector("#signupLink");
 
-// ------------------------------
-// 1. Função de Validação
-// ------------------------------
+
+if (btnSignup) {
+    btnSignup.addEventListener("click", (e) => {
+        e.preventDefault();
+        body.classList.replace("sign-in-js", "sign-up-js");
+    });
+}
+
+if (btnSignin) {
+    btnSignin.addEventListener("click", (e) => {
+        e.preventDefault();
+        body.classList.replace("sign-up-js", "sign-in-js");
+    });
+}
+
 function validarCampo(input, erroContainer, tipo) {
-    const valor = input.value.trim(); // pega o valor do campo (sem espaços extras)
-    let mensagem = ""; // mensagem de erro que pode ser exibida
+    const valor = input.value.trim();
+    let mensagem = ""; 
     
-    // Validação do campo usuário
     if (tipo === 'usuario') {
-        if (valor === '') {
-            mensagem = 'O nome de usuário não pode estar vazio.';
-        } else if (valor.length < 5) {
-            mensagem = 'O nome de usuário deve ter no mínimo 5 caracteres.';
-        }
+        if (valor === '') mensagem = 'O nome de usuário não pode estar vazio.';
+        else if (valor.length < 5) mensagem = 'Mínimo de 5 caracteres.';
     } 
-    // Validação do campo senha
     else if (tipo === 'senha') {
-        if (input.value === '') { // aqui não usamos trim para permitir espaços
-            mensagem = 'A senha não pode estar vazia.';
-        } else if (input.value.length < 6) {
-            mensagem = 'A senha deve ter no mínimo 6 caracteres.';
-        }
+        if (input.value === '') mensagem = 'A senha não pode estar vazia.';
+        else if (input.value.length < 6) mensagem = 'Mínimo de 6 caracteres.';
     }
 
-    // Feedback visual: se houver mensagem de erro
     if (mensagem !== "") {
-        erroContainer.textContent = mensagem; // mostra mensagem
-        erroContainer.style.color = "red";    // cor vermelha
-        input.style.borderColor = "red";      // borda vermelha no input
-        return false; // campo inválido
+        erroContainer.textContent = mensagem;
+        erroContainer.style.color = "red";
+        input.style.borderColor = "red";
+        return false;
     } else {
-        erroContainer.textContent = ""; // limpa mensagem
-        input.style.borderColor = "var(--color-input-border)"; // volta borda padrão
-        return true; // campo válido
+        erroContainer.textContent = "";
+        input.style.borderColor = "#28a745"; // Feedback de OK
+        return true;
     }
 }
 
-// ------------------------------
-// 2. Eventos nos Formulários
-// ------------------------------
 forms.forEach(form => {
-    // Seleciona os inputs de usuário e senha dentro do formulário
-    const usuarioInput = form.querySelector('input[type="text"]');
-    const senhaInput = form.querySelector('input[type="password"]');
-    
-    // Seleciona as divs de erro e sucesso
-    const usuarioErro = usuarioInput.parentElement.querySelector('.mensagem-erro');
-    const senhaErro = senhaInput.parentElement.querySelector('.mensagem-erro');
+    // Busca dentro do formulário atual para não misturar login com cadastro
+    const usuarioInput = form.querySelector('input[name*="username"]');
+    const senhaInput = form.querySelector('input[name*="password"]');
+    const usuarioErro = usuarioInput.nextElementSibling; // Pega a div mensagem-erro logo abaixo
+    const senhaErro = senhaInput.closest('.input-group').querySelector('.mensagem-erro');
     const sucessoGeral = form.querySelector('.mensagem-sucesso');
 
-    // Botão de "sign in" (troca de tela)
-    var btnSignin = document.querySelector("#signinLink");
-    if (btnSignin) {
-      btnSignin.addEventListener("click", function (e) {
-        e.preventDefault(); // evita comportamento padrão do link
-        body.className = "sign-in-js"; // troca a classe do body (provavelmente muda o layout)
-      });
-    }
-
-    // Validação em tempo real: cada vez que o usuário digita
     usuarioInput.addEventListener('input', () => validarCampo(usuarioInput, usuarioErro, 'usuario'));
     senhaInput.addEventListener('input', () => validarCampo(senhaInput, senhaErro, 'senha'));
 
-    // Evento de submit do formulário
     form.addEventListener("submit", function (e) {
-        e.preventDefault(); // evita envio padrão
+        e.preventDefault();
 
-        // Valida os dois campos
         const isUserValid = validarCampo(usuarioInput, usuarioErro, 'usuario');
         const isPassValid = validarCampo(senhaInput, senhaErro, 'senha');
 
-        // Se ambos forem válidos
         if (isUserValid && isPassValid) {
-            // Mostra mensagem de sucesso
-            if (sucessoGeral) {
-                sucessoGeral.textContent = "Cadastro realizado com sucesso!";
-                sucessoGeral.style.color = "#28a745"; // verde
-            }
-            
-            // Bordas verdes nos inputs
-            usuarioInput.style.borderColor = "#28a745";
-            senhaInput.style.borderColor = "#28a745";
+            const isLogin = form.id === "loginForm";
+            sucessoGeral.textContent = isLogin ? "Login realizado!" : "Cadastro realizado!";
+            sucessoGeral.style.color = "#28a745";
 
-            // Reset do formulário após 3 segundos
             setTimeout(() => {
-                form.reset(); // limpa os campos
-                if (sucessoGeral) sucessoGeral.textContent = ""; // limpa mensagem
-                usuarioInput.style.borderColor = "var(--color-input-border)";
-                senhaInput.style.borderColor = "var(--color-input-border)";
+                form.reset();
+                sucessoGeral.textContent = "";
+                // Reseta as bordas para a cor padrão (verifique se sua variável CSS existe)
+                usuarioInput.style.borderColor = ""; 
+                senhaInput.style.borderColor = "";
             }, 3000);
+        }
+    });
+});
+document.querySelectorAll(".toggle-password").forEach(icon => {
+    icon.addEventListener("click", function() {
+        const input = this.previousElementSibling; // Pega o input que vem antes do ícone
+        
+        if (input.type === "password") {
+            input.type = "text";
+            this.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+            input.type = "password";
+            this.classList.replace("fa-eye-slash", "fa-eye");
         }
     });
 });

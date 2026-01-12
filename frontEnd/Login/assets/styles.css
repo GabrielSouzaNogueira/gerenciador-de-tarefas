@@ -10,7 +10,7 @@
 }
 
 * {
-    box-sizing: border-box; /* Garante que padding não aumente o tamanho dos elementos */
+    box-sizing: border-box; /* p/ que o padding não aumente o tamanho dos elementos */
 }
 
 body {
@@ -33,9 +33,9 @@ body {
     background-color: var(--color-bg-login-box);
 }
 
-/* Estilo dos Inputs e Password Wrapper */
+/* Inputs e Password  */
 .input-group {
-    margin-bottom: 5px; /* Espaço entre cada bloco de campo */
+    margin-bottom: 5px; /* espaço entre cada bloco de campo */
     text-align: left;
 }
 
@@ -99,7 +99,7 @@ body {
     margin-top: 20px;
 }
 
-/* --- Seção de Formulários (Direita) --- */
+/* Formulários (Direita) */
 .login-section {
     flex: 1; 
     background-color: var(--color-bg-login-box);
@@ -152,4 +152,45 @@ input {
 
 .btn-login:hover {
     background-color: #272653;
+}
+
+/* p/ quando o body tiver a classe de login, esconda a seção de cadastro */
+body.sign-in-js .content-signup {
+    display: none;
+}
+
+/* p/ quando o body tiver a classe de cadastro, esconda a seção de login */
+body.sign-up-js .content-login {
+    display: none;
+}
+
+/* mensagens de erro e sucesso do JS */
+.mensagem-erro {
+    font-size: 0.8rem;
+    margin-top: 2px;
+    min-height: 1rem; /* p/ o layout não pular quando o erro aparece */
+}
+
+.mensagem-sucesso {
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* Alternância (Cadastre-se / Login) */
+.signup-text {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
+
+.signup-text a {
+    color: var(--color-bg-main);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.signup-text a:hover {
+    text-decoration: underline;
 }

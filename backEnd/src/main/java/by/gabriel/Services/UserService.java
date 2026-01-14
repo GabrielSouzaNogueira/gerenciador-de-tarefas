@@ -1,19 +1,18 @@
 package by.gabriel.Services;
 
-import java.sql.SQLDataException;
-import java.sql.SQLException;
-
 import by.gabriel.Repository.MovUserDAO;
 import by.gabriel.Repository.UserDAO;
 import by.gabriel.Model.Movimentacao.MovUser;
-import by.gabriel.Model.Status.StatusMovUser;
-import by.gabriel.Model.Status.UserStatus;
+import by.gabriel.Model.Movimentacao.Enum.AcaoMovUser;
+import by.gabriel.Model.Movimentacao.Enum.CampoMovUser;
 import by.gabriel.Model.Usuario.Usuario;
+import by.gabriel.Model.Usuario.Enum.UserStatus;
 
 public class UserService {
 
     UserStatus userStatus;
 
+    private MovUser movUser;
     private UserDAO dao;
     private MovUserDAO movUserDAO;
 
@@ -43,7 +42,7 @@ public class UserService {
         if (usuario.getSenha() == null || usuario.getSenha().trim().isBlank()) {
             throw new IllegalArgumentException("A senha está incorreta ou vazia!");
         }
-
+        
         try {
             
             // Normaliza os valores para minúsculo
@@ -64,9 +63,6 @@ public class UserService {
             if(autenticado.getStatus() == userStatus.DESATIVADO) {
                 throw new IllegalStateException("Usuário está desativado e não pode efetuar login.");
             }
-
-            //Adicionando a movimentação de login
-            MovUser movUser = movUserDAO.addMovimentacaoUser(autenticado.getUserId(), StatusMovUser.LOGIN);
 
             return autenticado; //Caso passe pelas verificações
 
@@ -119,7 +115,7 @@ public class UserService {
             }
 
             //Implementando a movimentação do cadastro
-            MovUser movUser = movUserDAO.addMovimentacaoUser(cadastrado.getUserId(), StatusMovUser.CADASTRO);
+            movUser = movUserDAO.addMovimentacaoUser(cadastrado.getUserId(),AcaoMovUser.CADASTRO, CampoMovUser.NENHUM);
         
             // retorna true se cadastrou, false se não
             return cadastrado;

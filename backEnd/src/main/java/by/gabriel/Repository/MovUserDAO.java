@@ -10,22 +10,24 @@ import java.time.LocalDateTime;
 
 import by.gabriel.ConexaoDB.ConexaoDB;
 import by.gabriel.Model.Movimentacao.MovUser;
-import by.gabriel.Model.Status.StatusMovUser;
+import by.gabriel.Model.Movimentacao.Enum.AcaoMovUser;
+import by.gabriel.Model.Movimentacao.Enum.CampoMovUser;
 
 public class MovUserDAO {
 
     // Método para registrar uma movimentação de usuário no banco
-    public MovUser addMovimentacaoUser(int userId,StatusMovUser statusMovUser) throws SQLException {
+    public MovUser addMovimentacaoUser(int userId,AcaoMovUser acaoMov, CampoMovUser campoAfetado) throws SQLException {
 
-        String sql = "INSERT INTO movUser (userId, dataMoviment, statusMovUser) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO movUser (userId, acaoMov, campoAfetado, dataMoviment) VALUES (?, ?, ?, ?)";
 
         //PreparedStatement pedindo retorno da chave primária gerada
         try (Connection conn = new ConexaoDB().conectar();
             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, userId);
-            stmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now())); // Data/hora atual
-            stmt.setString(3, statusMovUser.name());  // Enum Java convertido para String (pq estou inserindo)
+            stmt.setString(2,acaoMov.name()); // Enum ação convertido para String
+            stmt.setString(3, campoAfetado.name()); // Enum ação convertido para String
+            stmt.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now())); // Data/hora atual
 
             // Executa o INSERT e retorna quantas linhas foram afetadas
             int linhasAfetadas = stmt.executeUpdate();
@@ -43,7 +45,7 @@ public class MovUserDAO {
                         int idGerado = rs.getInt(1);
 
                         // Cria e retorna um objeto MovUser já com PK, FK e data/hora
-                        return new MovUser(idGerado, userId, LocalDateTime.now(), statusMovUser);
+                        return new MovUser(idGerado, userId, LocalDateTime.now(), acaoMov, campoAfetado);
                     }
                 }
             }
@@ -52,6 +54,7 @@ public class MovUserDAO {
             return null;
 
         } catch (SQLException e) {
+
             // Se der erro de banco, lança exceção para ser tratada no Service
             throw new IllegalStateException("Erro ao registrar movimentação: " + e.getMessage(), e);
         }

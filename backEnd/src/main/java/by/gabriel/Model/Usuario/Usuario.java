@@ -2,7 +2,7 @@ package by.gabriel.Model.Usuario;
 
 import java.time.LocalDateTime;
 
-import by.gabriel.Model.Status.UserStatus;;
+import by.gabriel.Model.Usuario.Enum.UserStatus;;
 
 public class Usuario {
     

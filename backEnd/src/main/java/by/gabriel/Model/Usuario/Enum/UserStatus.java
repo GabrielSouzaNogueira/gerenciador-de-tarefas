@@ -1,4 +1,4 @@
-package by.gabriel.Model.Status;
+package by.gabriel.Model.Usuario.Enum;
 
 public enum UserStatus {
 

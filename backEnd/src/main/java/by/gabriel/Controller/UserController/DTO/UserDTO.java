@@ -1,6 +1,6 @@
-package by.gabriel.Controller.UserController;
+package by.gabriel.Controller.UserController.DTO;
 
-import by.gabriel.Model.Status.UserStatus;
+import by.gabriel.Model.Usuario.Enum.UserStatus;
 
 public class UserDTO {
 

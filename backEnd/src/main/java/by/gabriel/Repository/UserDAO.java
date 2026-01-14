@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import by.gabriel.ConexaoDB.ConexaoDB;
-import by.gabriel.Model.Status.UserStatus;
 import by.gabriel.Model.Usuario.Usuario;
+import by.gabriel.Model.Usuario.Enum.UserStatus;
 
 public class UserDAO {
 
@@ -57,6 +57,7 @@ public class UserDAO {
 
     // Cadastro de usuários no banco
     public Usuario cadastroUser(Usuario usuario) {
+        
         // SQL para inserir nome e senha (status é definido pelo banco como default)
         String sql = "INSERT INTO usuario (nome, senha) VALUES (?, ?)";
 

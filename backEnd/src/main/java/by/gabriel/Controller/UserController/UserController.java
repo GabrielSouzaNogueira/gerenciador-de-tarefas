@@ -6,6 +6,7 @@ import static spark.Spark.*;
 import by.gabriel.Repository.MovUserDAO;
 import by.gabriel.Repository.UserDAO;
 import by.gabriel.Services.UserService;
+import by.gabriel.Controller.UserController.DTO.UserDTO;
 import by.gabriel.Model.Usuario.Usuario;
 
 public class UserController {
